@@ -88,7 +88,7 @@ ccacoserv-cli --help
 ## Local Caching
 
 An important property of the CoSERV design is that results can be cached using standard HTTP caching semantics.
-This means that not all CoSERV queries require a network call to the server, because cached results can be used instead, which improves performance.
+This means that not all CoSERV queries require a network call to the server, because cached results can be used instead, which improves performance and dependability.
 This demo supports the optional use of client-side disk caching.
 The command-line argument `--local-cache` (short form `-l`) can be supplied to the CLI tool along with a suitable directory path on the local disk.
 
