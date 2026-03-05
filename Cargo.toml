@@ -14,10 +14,10 @@ name = "ccacoserv-cli"
 path = "src/main.rs"
 
 [dependencies]
-coserv-rs = { git = "https://github.com/veraison/coserv-rs", features = ["openssl"] }
+coserv-rs = { git = "https://github.com/paulhowardarm/coserv-rs", branch = "phRemoveQueryTimestamp", features = ["openssl"] }
 corim-rs = { git = "https://github.com/veraison/corim-rs" }
 cover = { git = "https://github.com/veraison/cover" }
-veraison-apiclient = { git = "https://github.com/veraison/rust-apiclient", features = [ "coserv-disk-caching" ] }
+veraison-apiclient = { git = "https://github.com/paulhowardarm/rust-apiclient", branch = "phRemoveQueryTimestamp", features = [ "coserv-disk-caching" ] }
 serde = { version = "1.0.219", features = ["derive"] }
 serde_json = { version = "1.0.140", features = ["raw_value"] }
 ccatoken = { git = "https://github.com/veraison/rust-ccatoken" }
@@ -29,4 +29,4 @@ log = "0.4.29"
 clap = "4.5.57"
 clap-verbosity-flag = "3.0.4"
 env_logger = "0.11.8"
-chrono = "0.4.42"
+
