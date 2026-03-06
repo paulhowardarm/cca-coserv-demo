@@ -3847,7 +3847,7 @@ checksum = "accd4ea62f7bb7a82fe23066fb0957d48ef677f6eeb8215f372f52e48bb32426"
 [[package]]
 name = "veraison-apiclient"
 version = "0.0.2"
-source = "git+https://github.com/veraison/rust-apiclient#d8e32674df3d7389e9be216c37748463fcac61d2"
+source = "git+https://github.com/veraison/rust-apiclient#669299f72402467056f7686f739e135b3b576522"
 dependencies = [
  "base64 0.22.1",
  "chrono",
