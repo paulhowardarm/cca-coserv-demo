@@ -22,7 +22,9 @@ use coserv_rs::{
 };
 
 use veraison_apiclient::{
-    Discovery, DiscoveryBuilder, coserv::QueryRunner, coserv::QueryRunnerBuilder,
+    Discovery, DiscoveryBuilder,
+    coserv::{QueryRunner, QueryRunnerBuilder},
+    http::ConfigureHttp,
 };
 
 use crate::error::{Error, Result};
@@ -104,12 +106,18 @@ impl<'a> QueryClient {
         ca_cert: Option<&PathBuf>,
         cache_path: Option<&PathBuf>,
     ) -> Result<QueryClient> {
-        let discoverer = ca_cert
-            .map_or(DiscoveryBuilder::new(), |c| {
-                DiscoveryBuilder::new().with_root_certificate(c.clone())
-            })
-            .with_base_url(coserv_service_base_url.to_string())
-            .build()?;
+        let mut discovery_builder =
+            DiscoveryBuilder::new().with_base_url(coserv_service_base_url.to_string());
+
+        if let Some(some_ca_cert) = ca_cert {
+            discovery_builder = discovery_builder.with_root_certificate(some_ca_cert.clone());
+        }
+
+        if let Some(some_cache_path) = cache_path {
+            discovery_builder = discovery_builder.with_default_disk_cache(some_cache_path.clone());
+        }
+
+        let discoverer = discovery_builder.build()?;
 
         let discovery_doc = Discovery::get_coserv_discovery_document_json(&discoverer).await?;
 
