@@ -181,17 +181,21 @@ mod tests {
             .add_coserv_cbor_bytes(rv_coserv_bytes)
             .expect("failed to add CCA reference value CoSERV results into the store");
 
-        // The test data provides 13 reference values, but we shouldn't have any endorsed values yet
-        assert_eq!(store.items.rv_list.len(), 13);
+        // The test data provides 1 reference value triple, but we shouldn't have any endorsed values yet
+        assert_eq!(store.items.rv_list.len(), 1);
         assert_eq!(store.items.ev_list.len(), 0);
         assert_eq!(store.items.evs_list.len(), 0);
+
+        // There should be 14 measurement maps in the RV triple
+        let rvs = store.items.rv_list.first().unwrap().clone();
+        assert_eq!(rvs.condition.element_list.unwrap().len(), 14);
 
         store
             .add_coserv_cbor_bytes(ta_coserv_bytes)
             .expect("failed to add CCA trust anchor CoSERV results into the store");
 
-        // The test data provides 1 endorsed values - so we should have that, plus the 13 reference values still
-        assert_eq!(store.items.rv_list.len(), 13);
+        // The test data provides 1 endorsed values - so we should have that, plus the 1 reference value still
+        assert_eq!(store.items.rv_list.len(), 1);
         assert_eq!(store.items.ev_list.len(), 1);
         assert_eq!(store.items.evs_list.len(), 0);
     }

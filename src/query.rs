@@ -8,8 +8,7 @@ use log::debug;
 use ccatoken::token::Evidence;
 
 use corim_rs::{
-    ClassIdTypeChoice, ClassMapBuilder, ExtensionValue, InstanceIdTypeChoice, TaggedUeidType,
-    UeidType,
+    ClassIdTypeChoice, ClassMapBuilder, InstanceIdTypeChoice, TaggedBytes, TaggedUeidType, UeidType,
 };
 
 use coserv_rs::{
@@ -31,16 +30,9 @@ use crate::error::{Error, Result};
 
 /// Creates and returns a CoSERV query to obtain the reference values that would be needed to appraise the given CCA evidence
 pub fn reference_value_query_from_evidence<'a>(evidence: &Evidence) -> Result<Coserv<'a>> {
-    // NOTE: corim_rs::TaggedBytes could be a better choice here, but since the
-    // latest impl-id tag (560) is not supported yet in the veraison EDS, we will
-    // stick with 600 for now.
-    let v = ExtensionValue::Tag(
-        600,
-        Box::new(ExtensionValue::Bytes(
-            evidence.platform_claims.impl_id.as_slice().into(),
-        )),
-    );
-    let id = ClassIdTypeChoice::Extension(v);
+    let id = ClassIdTypeChoice::Bytes(TaggedBytes::new(
+        evidence.platform_claims.impl_id.as_slice().into(),
+    ));
     let cca_fvp_class_map = ClassMapBuilder::new().class_id(id).build()?;
 
     let classes: Vec<StatefulClass> = vec![
@@ -57,7 +49,7 @@ pub fn reference_value_query_from_evidence<'a>(evidence: &Evidence) -> Result<Co
 
     let rv_coserv = CoservBuilder::new()
         .profile(CoservProfile::Uri(
-            "tag:arm.com,2023:cca_platform#1.0.0".into(),
+            "tag:arm.com,2025:cca_platform#1.0.0".into(),
         ))
         .query(rv_query)
         .build()?;
@@ -85,7 +77,7 @@ pub fn trust_anchor_query_from_evidence<'a>(evidence: &Evidence) -> Result<Coser
     // create coserv map
     let ta_coserv = CoservBuilder::new()
         .profile(CoservProfile::Uri(
-            "tag:arm.com,2023:cca_platform#1.0.0".into(),
+            "tag:arm.com,2025:cca_platform#1.0.0".into(),
         ))
         .query(ta_query)
         .build()?;
@@ -235,7 +227,7 @@ mod tests {
             .expect("failed to convert the CCA reference value query to b64-url string");
         assert_eq!(
             b64,
-            "ogB4I3RhZzphcm0uY29tLDIwMjM6Y2NhX3BsYXRmb3JtIzEuMC4wAaMAAgGhAIGBoQDZAlhYIH9FTEYCAQEAAAAAAAAAAAADAD4AAQAAAFBYAAAAAAAAAgA"
+            "ogB4I3RhZzphcm0uY29tLDIwMjU6Y2NhX3BsYXRmb3JtIzEuMC4wAaMAAgGhAIGBoQDZAjBYIH9FTEYCAQEAAAAAAAAAAAADAD4AAQAAAFBYAAAAAAAAAgA"
         );
     }
 
@@ -251,7 +243,7 @@ mod tests {
             .expect("failed to convert the CCA trust anchor query to b64-url string");
         assert_eq!(
             b64,
-            "ogB4I3RhZzphcm0uY29tLDIwMjM6Y2NhX3BsYXRmb3JtIzEuMC4wAaMAAQGhAYGB2QImWCEBBwYFBAMCAQAPDg0MCwoJCBcWFRQTEhEQHx4dHBsaGRgCAA"
+            "ogB4I3RhZzphcm0uY29tLDIwMjU6Y2NhX3BsYXRmb3JtIzEuMC4wAaMAAQGhAYGB2QImWCEBBwYFBAMCAQAPDg0MCwoJCBcWFRQTEhEQHx4dHBsaGRgCAA"
         );
     }
 
